@@ -19,24 +19,21 @@ import {
   Calendar,
   Download
 } from 'lucide-react';
+import { useScrollAnimations, useActiveSection } from '@/components/ScrollAnimations';
+import { ParticleBackground } from '@/components/ParticleBackground';
 
 const Index = () => {
   const [isDark, setIsDark] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { toast } = useToast();
 
+  // Initialize scroll animations and active section tracking
+  useScrollAnimations();
+  useActiveSection();
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
-      
-      // Animate elements on scroll
-      const elements = document.querySelectorAll('.animate-on-scroll');
-      elements.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.8) {
-          el.classList.add('visible');
-        }
-      });
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -137,36 +134,43 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-md border-b border-border z-50">
+      {/* Enhanced Navigation */}
+      <nav className="fixed top-0 w-full nav-blur z-50 transition-all duration-300">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold text-primary">MKT</div>
+          <div className="text-2xl font-bold text-primary text-glow">MKT</div>
           <div className="hidden md:flex space-x-6">
             {['about', 'skills', 'projects', 'blog', 'internships', 'contact'].map((section) => (
               <button
                 key={section}
+                data-section={section}
                 onClick={() => scrollToSection(section)}
-                className="capitalize hover:text-primary transition-colors"
+                className="capitalize hover:text-primary transition-all duration-300 relative"
               >
                 {section}
               </button>
             ))}
           </div>
-          <Button onClick={toggleTheme} variant="outline" size="sm">
+          <Button 
+            onClick={toggleTheme} 
+            variant="outline" 
+            size="sm"
+            className="glow-button"
+          >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Enhanced Hero Section */}
       <section className="min-h-screen flex items-center justify-center gradient-bg relative overflow-hidden">
+        <ParticleBackground />
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="animate-fade-in">
-            <div className="w-32 h-32 mx-auto mb-8 rounded-full bg-primary/20 flex items-center justify-center text-4xl font-bold text-white border-4 border-primary">
+            <div className="w-32 h-32 mx-auto mb-8 rounded-full bg-primary/20 flex items-center justify-center text-4xl font-bold text-white border-4 border-primary profile-glow">
               MKT
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-white">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-white text-glow">
               Manoj Kumar Talari
             </h1>
             <p className="text-xl md:text-2xl mb-2 text-white/90">
@@ -179,7 +183,7 @@ const Index = () => {
               <Button 
                 onClick={() => scrollToSection('projects')}
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-white"
+                className="bg-primary hover:bg-primary/90 text-white glow-button"
               >
                 See My Projects
               </Button>
@@ -187,7 +191,7 @@ const Index = () => {
                 onClick={() => scrollToSection('contact')}
                 variant="outline"
                 size="lg"
-                className="border-white text-white hover:bg-white hover:text-accent"
+                className="border-white text-white hover:bg-white hover:text-accent glow-button pulse-glow"
               >
                 Contact Me
               </Button>
@@ -199,71 +203,57 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Section */}
+      {/* Enhanced About Section */}
       <section id="about" className="py-20">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
-            <h2 className="text-4xl font-bold text-center mb-12 text-primary">About Me</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-primary section-title">About Me</h2>
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
+              <div className="animate-on-scroll">
                 <p className="text-lg mb-6 leading-relaxed">
                   Final-year BTech student specializing in full-stack development with expertise in HTML, CSS, JavaScript, Python, and MySQL. Passionate about building scalable web applications. Seeking an opportunity to apply my technical skills in a dynamic work environment.
                 </p>
-                <Button className="bg-primary hover:bg-primary/90 text-white">
+                <Button className="bg-primary hover:bg-primary/90 text-white glow-button">
                   <Download className="h-4 w-4 mr-2" />
                   Download Resume
                 </Button>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Card className="text-center">
-                  <CardContent className="p-4">
-                    <MapPin className="h-8 w-8 mx-auto mb-2 text-primary" />
-                    <p className="font-semibold">Location</p>
-                    <p className="text-sm text-muted-foreground">Andhra Pradesh, India</p>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent className="p-4">
-                    <GraduationCap className="h-8 w-8 mx-auto mb-2 text-primary" />
-                    <p className="font-semibold">College</p>
-                    <p className="text-sm text-muted-foreground">QIS College of Engineering</p>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent className="p-4">
-                    <Calendar className="h-8 w-8 mx-auto mb-2 text-primary" />
-                    <p className="font-semibold">Graduation</p>
-                    <p className="text-sm text-muted-foreground">2026</p>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent className="p-4">
-                    <Mail className="h-8 w-8 mx-auto mb-2 text-primary" />
-                    <p className="font-semibold">Email</p>
-                    <p className="text-sm text-muted-foreground">talarimanoj2005@gmail.com</p>
-                  </CardContent>
-                </Card>
+                {[
+                  { icon: MapPin, title: "Location", detail: "Andhra Pradesh, India" },
+                  { icon: GraduationCap, title: "College", detail: "QIS College of Engineering" },
+                  { icon: Calendar, title: "Graduation", detail: "2026" },
+                  { icon: Mail, title: "Email", detail: "talarimanoj2005@gmail.com" }
+                ].map((item, index) => (
+                  <Card key={index} className="text-center skill-card animate-on-scroll">
+                    <CardContent className="p-4">
+                      <item.icon className="h-8 w-8 mx-auto mb-2 text-primary" />
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="text-sm text-muted-foreground">{item.detail}</p>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Skills Section */}
+      {/* Enhanced Skills Section */}
       <section id="skills" className="py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
-            <h2 className="text-4xl font-bold text-center mb-12 text-primary">Skills</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-primary section-title">Skills</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Object.entries(skills).map(([category, skillList]) => (
-                <Card key={category} className="skill-card">
+              {Object.entries(skills).map(([category, skillList], index) => (
+                <Card key={category} className="skill-card animate-on-scroll" style={{ animationDelay: `${index * 100}ms` }}>
                   <CardHeader>
                     <CardTitle className="text-xl text-center">{category}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2 justify-center">
                       {skillList.map((skill) => (
-                        <Badge key={skill} variant="secondary" className="bg-primary/10 text-primary">
+                        <Badge key={skill} variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
                           {skill}
                         </Badge>
                       ))}
@@ -276,14 +266,14 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
+      {/* Enhanced Projects Section */}
       <section id="projects" className="py-20">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
-            <h2 className="text-4xl font-bold text-center mb-12 text-primary">Projects</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-primary section-title">Projects</h2>
             <div className="grid md:grid-cols-2 gap-8">
               {projects.map((project, index) => (
-                <Card key={index} className="project-card">
+                <Card key={index} className="project-card animate-on-scroll" style={{ animationDelay: `${index * 200}ms` }}>
                   <CardHeader>
                     <CardTitle className="text-xl">{project.title}</CardTitle>
                     <CardDescription>{project.description}</CardDescription>
@@ -306,11 +296,11 @@ const Index = () => {
                       </ul>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-white">
+                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-white glow-button">
                         <Github className="h-4 w-4 mr-2" />
                         GitHub
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" className="glow-button">
                         Live Demo
                       </Button>
                     </div>
@@ -322,21 +312,21 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Blog Section */}
+      {/* Enhanced Blog Section */}
       <section id="blog" className="py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
-            <h2 className="text-4xl font-bold text-center mb-12 text-primary">Blog</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-primary section-title">Blog</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {blogPosts.map((post, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card key={index} className="skill-card animate-on-scroll" style={{ animationDelay: `${index * 150}ms` }}>
                   <CardHeader>
                     <CardTitle className="text-lg">{post.title}</CardTitle>
                     <CardDescription>{post.date}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm mb-4">{post.summary}</p>
-                    <Button size="sm" variant="outline" className="w-full">
+                    <Button size="sm" variant="outline" className="w-full glow-button">
                       Read More
                     </Button>
                   </CardContent>
@@ -347,14 +337,14 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Internships Section */}
+      {/* Enhanced Internships Section */}
       <section id="internships" className="py-20">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
-            <h2 className="text-4xl font-bold text-center mb-12 text-primary">Internships</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-primary section-title">Internships</h2>
             <div className="space-y-8">
               {internships.map((internship, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card key={index} className="project-card animate-on-scroll" style={{ animationDelay: `${index * 250}ms` }}>
                   <CardHeader>
                     <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                       <div>
@@ -386,17 +376,17 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Certifications Section */}
+      {/* Enhanced Certifications Section */}
       <section className="py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
-            <h2 className="text-4xl font-bold text-center mb-12 text-primary">Certifications & Achievements</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-primary section-title">Certifications & Achievements</h2>
             <div className="max-w-3xl mx-auto">
-              <Card>
+              <Card className="skill-card">
                 <CardContent className="p-8">
                   <ul className="space-y-4">
                     {certifications.map((cert, index) => (
-                      <li key={index} className="flex items-start">
+                      <li key={index} className="flex items-start animate-on-scroll" style={{ animationDelay: `${index * 100}ms` }}>
                         <div className="w-2 h-2 bg-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
                         <span className="text-lg">{cert}</span>
                       </li>
@@ -409,13 +399,13 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Enhanced Contact Section */}
       <section id="contact" className="py-20">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
-            <h2 className="text-4xl font-bold text-center mb-12 text-primary">Contact Me</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-primary section-title">Contact Me</h2>
             <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-              <div>
+              <div className="animate-on-scroll">
                 <h3 className="text-2xl font-semibold mb-6">Get In Touch</h3>
                 <div className="space-y-4">
                   <div className="flex items-center">
@@ -425,7 +415,7 @@ const Index = () => {
                       onClick={copyEmail}
                       variant="ghost" 
                       size="sm" 
-                      className="ml-2"
+                      className="ml-2 glow-button"
                     >
                       Copy
                     </Button>
@@ -438,6 +428,7 @@ const Index = () => {
                     <Button 
                       variant="outline" 
                       size="sm"
+                      className="glow-button"
                       onClick={() => window.open('https://github.com/Manoj9346', '_blank')}
                     >
                       <Github className="h-4 w-4 mr-2" />
@@ -446,6 +437,7 @@ const Index = () => {
                     <Button 
                       variant="outline" 
                       size="sm"
+                      className="glow-button"
                       onClick={() => window.open('https://linkedin.com/in/talarimanojkumar-53b057291', '_blank')}
                     >
                       <Linkedin className="h-4 w-4 mr-2" />
@@ -454,12 +446,12 @@ const Index = () => {
                   </div>
                 </div>
               </div>
-              <div>
+              <div className="animate-on-scroll">
                 <form onSubmit={handleContactSubmit} className="space-y-4">
-                  <Input placeholder="Your Name" required />
-                  <Input type="email" placeholder="Your Email" required />
-                  <Textarea placeholder="Your Message" rows={5} required />
-                  <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white">
+                  <Input placeholder="Your Name" required className="transition-all duration-300 focus:shadow-lg" />
+                  <Input type="email" placeholder="Your Email" required className="transition-all duration-300 focus:shadow-lg" />
+                  <Textarea placeholder="Your Message" rows={5} required className="transition-all duration-300 focus:shadow-lg" />
+                  <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white glow-button">
                     Send Message
                   </Button>
                 </form>
@@ -469,7 +461,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Enhanced Footer */}
       <footer className="py-8 bg-accent text-accent-foreground">
         <div className="container mx-auto px-4 text-center">
           <p className="mb-4">Made with ❤️ by Manoj Kumar Talari</p>
@@ -477,6 +469,7 @@ const Index = () => {
             <Button 
               variant="ghost" 
               size="sm"
+              className="glow-button"
               onClick={() => window.open('https://github.com/Manoj9346', '_blank')}
             >
               <Github className="h-4 w-4" />
@@ -484,6 +477,7 @@ const Index = () => {
             <Button 
               variant="ghost" 
               size="sm"
+              className="glow-button"
               onClick={() => window.open('https://linkedin.com/in/talarimanojkumar-53b057291', '_blank')}
             >
               <Linkedin className="h-4 w-4" />
@@ -492,11 +486,11 @@ const Index = () => {
         </div>
       </footer>
 
-      {/* Scroll to Top Button */}
+      {/* Enhanced Scroll to Top Button */}
       {showScrollTop && (
         <Button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 rounded-full w-12 h-12 bg-primary hover:bg-primary/90 text-white"
+          className="fixed bottom-8 right-8 z-50 rounded-full w-12 h-12 bg-primary hover:bg-primary/90 text-white glow-button"
           size="sm"
         >
           <ArrowUp className="h-4 w-4" />
