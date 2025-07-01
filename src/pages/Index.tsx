@@ -296,11 +296,20 @@ const Index = () => {
                       </ul>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-white glow-button">
+                      <Button 
+                        size="sm" 
+                        className="bg-primary hover:bg-primary/90 text-white glow-button"
+                        onClick={() => window.open('https://github.com/Manoj9346', '_blank')}
+                      >
                         <Github className="h-4 w-4 mr-2" />
                         GitHub
                       </Button>
-                      <Button size="sm" variant="outline" className="glow-button">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="glow-button"
+                        onClick={() => window.open('https://github.com/Manoj9346', '_blank')}
+                      >
                         Live Demo
                       </Button>
                     </div>
@@ -438,7 +447,7 @@ const Index = () => {
                       variant="outline" 
                       size="sm"
                       className="glow-button"
-                      onClick={() => window.open('https://linkedin.com/in/talarimanojkumar-53b057291', '_blank')}
+                      onClick={() => window.open('https://www.linkedin.com/in/talari-manoj-kumar-53b057291', '_blank')}
                     >
                       <Linkedin className="h-4 w-4 mr-2" />
                       LinkedIn
@@ -478,7 +487,7 @@ const Index = () => {
               variant="ghost" 
               size="sm"
               className="glow-button"
-              onClick={() => window.open('https://linkedin.com/in/talarimanojkumar-53b057291', '_blank')}
+              onClick={() => window.open('https://www.linkedin.com/in/talari-manoj-kumar-53b057291', '_blank')}
             >
               <Linkedin className="h-4 w-4" />
             </Button>
