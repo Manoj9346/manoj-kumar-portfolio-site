@@ -129,7 +129,7 @@ const Index = () => {
   };
 
   const downloadResume = () => {
-    window.open('https://drive.google.com/uc?export=download&id=1zFB4hOwx6ZhXKorwV9_hLZB0or0iWWL_', '_blank');
+    window.open('https://drive.google.com/file/d/1hDaB8muAVIRIUiAws-Wmw6rY7hA-2a39/view?usp=drive_link', '_blank');
   };
 
   const skills = {
