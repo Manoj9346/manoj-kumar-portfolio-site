@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,11 +20,14 @@ import {
 } from 'lucide-react';
 import { useScrollAnimations, useActiveSection } from '@/components/ScrollAnimations';
 import { ParticleBackground } from '@/components/ParticleBackground';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const [isDark, setIsDark] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Initialize scroll animations and active section tracking
   useScrollAnimations();
@@ -55,10 +57,27 @@ const Index = () => {
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!contactForm.name || !contactForm.email || !contactForm.message) {
+      toast({
+        title: "Please fill all fields",
+        description: "Name, email, and message are required.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const subject = encodeURIComponent("Message from Portfolio");
+    const body = encodeURIComponent(`Name: ${contactForm.name}\nEmail: ${contactForm.email}\nMessage: ${contactForm.message}`);
+    const mailtoLink = `mailto:talarimanoj2005@gmail.com?subject=${subject}&body=${body}`;
+    
+    window.location.href = mailtoLink;
+    
     toast({
-      title: "Message Sent!",
-      description: "Thank you for reaching out. I'll get back to you soon!",
+      title: "Opening Mail Client",
+      description: "Your default mail client will open with the pre-filled message.",
     });
+    
+    setContactForm({ name: '', email: '', message: '' });
   };
 
   const copyEmail = () => {
@@ -67,6 +86,10 @@ const Index = () => {
       title: "Email Copied!",
       description: "talarimanoj2005@gmail.com copied to clipboard",
     });
+  };
+
+  const downloadResume = () => {
+    window.open('https://drive.google.com/uc?export=download&id=1zFB4hOwx6ZhXKorwV9_hLZB0or0iWWL_', '_blank');
   };
 
   const skills = {
@@ -81,13 +104,17 @@ const Index = () => {
       title: "Online Food Delivery Website",
       description: "Full-featured food delivery platform with cart system, UPI payments, table reservations, and donation system.",
       tech: ["HTML", "CSS", "JavaScript", "Python", "MySQL"],
-      features: ["Cart System", "UPI Payments", "Table Reservations", "Donation System"]
+      features: ["Cart System", "UPI Payments", "Table Reservations", "Donation System"],
+      githubLink: "https://github.com/Manoj9346/FOOD_FLEX",
+      liveLink: "https://food-flex.vercel.app/"
     },
     {
       title: "Online Learning Platform",
       description: "Interactive web-based learning platform with clean navigation and student-friendly design.",
       tech: ["HTML", "CSS", "JavaScript", "Python"],
-      features: ["Interactive Interface", "Clean Navigation", "Student-Friendly Design"]
+      features: ["Interactive Interface", "Clean Navigation", "Student-friendly Design"],
+      githubLink: "https://github.com/Manoj9346/Learners_Acadamy",
+      liveLink: "https://learners-acadamy.vercel.app/"
     }
   ];
 
@@ -116,19 +143,22 @@ const Index = () => {
 
   const blogPosts = [
     {
-      title: "Getting Started with Full-Stack Development",
+      id: "food-delivery-app",
+      title: "How I Built My Food Delivery App",
       date: "2024-06-15",
-      summary: "A beginner's guide to understanding the fundamentals of full-stack web development and the technologies involved."
+      summary: "A detailed walkthrough of building a full-stack food delivery platform with HTML, CSS, JavaScript, Python, and MySQL."
     },
     {
-      title: "Building Responsive Web Applications",
+      id: "fullstack-learning",
+      title: "Learning Full-Stack Development in 2024",
       date: "2024-06-10", 
-      summary: "Best practices for creating responsive designs that work seamlessly across all devices and screen sizes."
+      summary: "My journey and insights on mastering both frontend and backend technologies as a computer science student."
     },
     {
-      title: "Database Design Principles",
+      id: "building-projects",
+      title: "Building Projects to Get Hired Faster",
       date: "2024-06-05",
-      summary: "Essential principles and patterns for designing efficient and scalable database schemas for web applications."
+      summary: "Essential tips and strategies for creating impressive projects that stand out to recruiters and hiring managers."
     }
   ];
 
@@ -213,7 +243,10 @@ const Index = () => {
                 <p className="text-lg mb-6 leading-relaxed">
                   Final-year BTech student specializing in full-stack development with expertise in HTML, CSS, JavaScript, Python, and MySQL. Passionate about building scalable web applications. Seeking an opportunity to apply my technical skills in a dynamic work environment.
                 </p>
-                <Button className="bg-primary hover:bg-primary/90 text-white glow-button">
+                <Button 
+                  onClick={downloadResume}
+                  className="bg-primary hover:bg-primary/90 text-white glow-button"
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Download Resume
                 </Button>
@@ -275,7 +308,12 @@ const Index = () => {
               {projects.map((project, index) => (
                 <Card key={index} className="project-card animate-on-scroll" style={{ animationDelay: `${index * 200}ms` }}>
                   <CardHeader>
-                    <CardTitle className="text-xl">{project.title}</CardTitle>
+                    <CardTitle 
+                      className="text-xl cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => window.open(project.githubLink, '_blank')}
+                    >
+                      {project.title}
+                    </CardTitle>
                     <CardDescription>{project.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -299,7 +337,7 @@ const Index = () => {
                       <Button 
                         size="sm" 
                         className="bg-primary hover:bg-primary/90 text-white glow-button"
-                        onClick={() => window.open('https://github.com/Manoj9346', '_blank')}
+                        onClick={() => window.open(project.githubLink, '_blank')}
                       >
                         <Github className="h-4 w-4 mr-2" />
                         GitHub
@@ -308,7 +346,7 @@ const Index = () => {
                         size="sm" 
                         variant="outline" 
                         className="glow-button"
-                        onClick={() => window.open('https://github.com/Manoj9346', '_blank')}
+                        onClick={() => window.open(project.liveLink, '_blank')}
                       >
                         Live Demo
                       </Button>
@@ -335,7 +373,12 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm mb-4">{post.summary}</p>
-                    <Button size="sm" variant="outline" className="w-full glow-button">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="w-full glow-button"
+                      onClick={() => navigate(`/blog/${post.id}`)}
+                    >
                       Read More
                     </Button>
                   </CardContent>
@@ -457,9 +500,29 @@ const Index = () => {
               </div>
               <div className="animate-on-scroll">
                 <form onSubmit={handleContactSubmit} className="space-y-4">
-                  <Input placeholder="Your Name" required className="transition-all duration-300 focus:shadow-lg" />
-                  <Input type="email" placeholder="Your Email" required className="transition-all duration-300 focus:shadow-lg" />
-                  <Textarea placeholder="Your Message" rows={5} required className="transition-all duration-300 focus:shadow-lg" />
+                  <Input 
+                    placeholder="Your Name" 
+                    required 
+                    value={contactForm.name}
+                    onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                    className="transition-all duration-300 focus:shadow-lg" 
+                  />
+                  <Input 
+                    type="email" 
+                    placeholder="Your Email" 
+                    required 
+                    value={contactForm.email}
+                    onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                    className="transition-all duration-300 focus:shadow-lg" 
+                  />
+                  <Textarea 
+                    placeholder="Your Message" 
+                    rows={5} 
+                    required 
+                    value={contactForm.message}
+                    onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                    className="transition-all duration-300 focus:shadow-lg" 
+                  />
                   <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white glow-button">
                     Send Message
                   </Button>
