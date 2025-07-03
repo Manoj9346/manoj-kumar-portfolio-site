@@ -70,14 +70,33 @@ const Index = () => {
     const body = encodeURIComponent(`Name: ${contactForm.name}\nEmail: ${contactForm.email}\nMessage: ${contactForm.message}`);
     const mailtoLink = `mailto:talarimanoj2005@gmail.com?subject=${subject}&body=${body}`;
     
-    window.location.href = mailtoLink;
-    
-    toast({
-      title: "Opening Mail Client",
-      description: "Your default mail client will open with the pre-filled message.",
-    });
-    
-    setContactForm({ name: '', email: '', message: '' });
+    // Try multiple methods to ensure it works on desktop
+    try {
+      // Method 1: Create a temporary anchor element and click it
+      const tempLink = document.createElement('a');
+      tempLink.href = mailtoLink;
+      tempLink.target = '_blank';
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      
+      toast({
+        title: "Opening Mail Client",
+        description: "Your default mail client should open with the pre-filled message.",
+      });
+      
+      setContactForm({ name: '', email: '', message: '' });
+    } catch (error) {
+      // Fallback method: Direct window.location
+      window.location.href = mailtoLink;
+      
+      toast({
+        title: "Opening Mail Client",
+        description: "Your default mail client should open with the pre-filled message.",
+      });
+      
+      setContactForm({ name: '', email: '', message: '' });
+    }
   };
 
   const copyEmail = () => {
