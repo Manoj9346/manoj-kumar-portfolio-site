@@ -16,16 +16,19 @@ import {
   MapPin,
   GraduationCap,
   Calendar,
-  Download
+  Download,
+  Loader2
 } from 'lucide-react';
 import { useScrollAnimations, useActiveSection } from '@/components/ScrollAnimations';
 import { ParticleBackground } from '@/components/ParticleBackground';
 import { useNavigate } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 
 const Index = () => {
   const [isDark, setIsDark] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -55,9 +58,11 @@ const Index = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contactForm.name || !contactForm.email || !contactForm.message) {
+    
+    // Validate all fields
+    if (!contactForm.name.trim() || !contactForm.email.trim() || !contactForm.message.trim()) {
       toast({
         title: "Please fill all fields",
         description: "Name, email, and message are required.",
@@ -65,37 +70,53 @@ const Index = () => {
       });
       return;
     }
-    
-    const subject = encodeURIComponent("Message from Portfolio");
-    const body = encodeURIComponent(`Name: ${contactForm.name}\nEmail: ${contactForm.email}\nMessage: ${contactForm.message}`);
-    const mailtoLink = `mailto:talarimanoj2005@gmail.com?subject=${subject}&body=${body}`;
-    
-    // Try multiple methods to ensure it works on desktop
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactForm.email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      // Method 1: Create a temporary anchor element and click it
-      const tempLink = document.createElement('a');
-      tempLink.href = mailtoLink;
-      tempLink.target = '_blank';
-      document.body.appendChild(tempLink);
-      tempLink.click();
-      document.body.removeChild(tempLink);
+      // EmailJS configuration
+      const serviceId = 'service_egqh6ef';
+      const templateId = 'template_86flkzg';
+      const publicKey = 'GleWBlT7yQiwpBlc6';
+
+      // Template parameters for EmailJS
+      const templateParams = {
+        from_name: contactForm.name,
+        from_email: contactForm.email,
+        message: contactForm.message,
+        to_email: 'talarimanoj2005@gmail.com'
+      };
+
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
       
       toast({
-        title: "Opening Mail Client",
-        description: "Your default mail client should open with the pre-filled message.",
+        title: "Message sent successfully!",
+        description: "Thank you for your message. I'll get back to you soon.",
       });
       
+      // Reset form
       setContactForm({ name: '', email: '', message: '' });
+      
     } catch (error) {
-      // Fallback method: Direct window.location
-      window.location.href = mailtoLink;
-      
+      console.error('EmailJS error:', error);
       toast({
-        title: "Opening Mail Client",
-        description: "Your default mail client should open with the pre-filled message.",
+        title: "Failed to send message",
+        description: "Something went wrong. Please try again or contact me directly.",
+        variant: "destructive"
       });
-      
-      setContactForm({ name: '', email: '', message: '' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -470,7 +491,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Enhanced Contact Section */}
+      {/* Enhanced Contact Section with EmailJS */}
       <section id="contact" className="py-20">
         <div className="container mx-auto px-4">
           <div className="animate-on-scroll">
@@ -524,7 +545,8 @@ const Index = () => {
                     required 
                     value={contactForm.name}
                     onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                    className="transition-all duration-300 focus:shadow-lg" 
+                    className="transition-all duration-300 focus:shadow-lg"
+                    disabled={isSubmitting}
                   />
                   <Input 
                     type="email" 
@@ -532,7 +554,8 @@ const Index = () => {
                     required 
                     value={contactForm.email}
                     onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                    className="transition-all duration-300 focus:shadow-lg" 
+                    className="transition-all duration-300 focus:shadow-lg"
+                    disabled={isSubmitting}
                   />
                   <Textarea 
                     placeholder="Your Message" 
@@ -540,10 +563,22 @@ const Index = () => {
                     required 
                     value={contactForm.message}
                     onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                    className="transition-all duration-300 focus:shadow-lg" 
+                    className="transition-all duration-300 focus:shadow-lg"
+                    disabled={isSubmitting}
                   />
-                  <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white glow-button">
-                    Send Message
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-primary hover:bg-primary/90 text-white glow-button"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      'Send Message'
+                    )}
                   </Button>
                 </form>
               </div>
