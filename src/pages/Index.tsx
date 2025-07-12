@@ -129,7 +129,11 @@ const Index = () => {
   };
 
   const downloadResume = () => {
-    window.open('https://drive.google.com/file/d/1hDaB8muAVIRIUiAws-Wmw6rY7hA-2a39/view?usp=drive_link', '_blank');
+    window.open('https://www.dropbox.com/scl/fi/7oeud09cdkk203upgcoju/TALARI_MANOJ_KUMAR_CV.pdf?rlkey=sydi4lrtjxmo9so4exi1c4qop&dl=1', '_blank');
+  };
+
+  const viewResume = () => {
+    window.open('https://www.dropbox.com/scl/fi/7oeud09cdkk203upgcoju/TALARI_MANOJ_KUMAR_CV.pdf?rlkey=sydi4lrtjxmo9so4exi1c4qop&raw=1', '_blank');
   };
 
   const skills = {
@@ -283,13 +287,22 @@ const Index = () => {
                 <p className="text-lg mb-6 leading-relaxed">
                   Final-year BTech student specializing in full-stack development with expertise in HTML, CSS, JavaScript, Python, and MySQL. Passionate about building scalable web applications. Seeking an opportunity to apply my technical skills in a dynamic work environment.
                 </p>
-                <Button 
-                  onClick={downloadResume}
-                  className="bg-primary hover:bg-primary/90 text-white glow-button"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Resume
-                </Button>
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={viewResume}
+                    variant="outline"
+                    className="glow-button"
+                  >
+                    View Resume
+                  </Button>
+                  <Button 
+                    onClick={downloadResume}
+                    className="bg-primary hover:bg-primary/90 text-white glow-button"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Resume
+                  </Button>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {[
